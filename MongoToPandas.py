@@ -35,20 +35,20 @@ class MongoToPython():
     def mongo_to_lists(self, collection_name, column_names, dict_requirements=None):
         '''
         INPUT: String, List of Strings, dict_req=Dictionary
-        DESCRIPTION: Takes queries to a combined list or list
+        DESCRIPTION: Takes queries and converts to a combined list or list
         OUTPUT: List of Lists
         '''
         list_of_columns = []
-        for col in column_names:
-            list_of_columns.append([])
-        
+  
         for query in self.query_all(collection_name, dict_requirements):
+            row = []
             for i in xrange(len(column_names)):
-                list_of_columns[i].append(query[column_names[i]])
+                row.append(query[column_names[i]])
+            list_of_columns.append(row)
             
         return list_of_columns
 
-    def mongo_to_df(self, collection_name, column_names, dict_requirements=dict_requirements):
+    def mongo_to_df(self, collection_name, column_names, dict_requirements=None):
         '''
         INPUT: String, List of Strings, dict_req=Dictionary
         DESCRIPTION: Like mongo_to_lists but returns a dataframe
@@ -56,8 +56,7 @@ class MongoToPython():
         '''
         lst = self.mongo_to_lists(collection_name, column_names, dict_requirements=dict_requirements)
         df = pd.DataFrame(data=lst)
-        df = df.T
-        df.columns = columns
+        df.columns = column_names
         return df
 
     def query_for_each(self, collection_name, iterable, matching_field, columns):
@@ -85,8 +84,8 @@ class MongoToPython():
     
     def get_one(self, collection_name, key, value):
         '''
-        INPUT: 
-        DESCRIPTION: 
-        OUTPUT:  
+        INPUT: String, String, String
+        DESCRIPTION: Get's the first document with a matching key value
+        OUTPUT: Dictionary
         '''
         return db[collection_name].find_one({key:value})
