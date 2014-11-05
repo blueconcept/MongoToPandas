@@ -3,9 +3,10 @@ import pandas as pd
 
 class MongoToPython():
     '''
-    API for Mongo to Python
+    API for Mongo to Pandas/Python
+    BY: Thang Tran
     '''
-    
+
     def __init__(self, database_name, host=None, post=None):
         '''
         INPUT: String, host=String, post=String
