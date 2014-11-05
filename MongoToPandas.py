@@ -3,14 +3,13 @@ import pandas as pd
 
 class MongoToPython():
     '''
-    API for Mongo to Pandas/Python
-    BY: Thang Tran
+    API for Mongo to Python
     '''
-
+    
     def __init__(self, database_name, host=None, post=None):
         '''
         INPUT: String, host=String, post=String
-        DESCRIPTION: initializes MongoClient and assigns the database
+        DESCRIPTION: Initializes MongoClient and assigns database
         OUTPUT: None
         '''
         if host==None and post==None:
@@ -66,14 +65,15 @@ class MongoToPython():
         DESCRIPTION: Does a query for each item
         OUTPUT: Pandas DataFrame
         '''
-        dicts_of_dicts = {}
+        dicts_of_dicts = { col:{} for col in columns}
         
         i = 0
         for item in iterable:
             for query in mongo.query_all(collection_name, dict_requirements={matching_field:item}):
-                dicts_of_dicts[i] = {'user_id': query['user_id'] , 'business_id': query['business_id'], 'rating':query['stars']}
+                for col in columns:
+                    dicts_of_dicts[col][i] = query[col]
                 i += 1
-        return pd.DataFrame(dicts_of_dicts).T
+        return pd.DataFrame(dicts_of_dicts)
     
     def get_collection_keys(self, collection_name):
         '''
